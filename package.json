@@ -1,5 +1,5 @@
 {
-  "name": "mediaurl-example",
+  "name": "bt-addon",
   "version": "0.0.0",
   "main": "dist",
   "scripts": {
@@ -9,7 +9,8 @@
     "prepare": "npx simple-git-hooks"
   },
   "dependencies": {
-    "@mediaurl/sdk": "^2.0.0-alpha.10"
+    "@mediaurl/sdk": "^2.0.0",
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "lint-staged": "^10.5.4",
