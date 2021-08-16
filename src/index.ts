@@ -47,41 +47,81 @@ fetchData()
         id: pl.feedid,
         name: pl.title,
         adult: false,
+        options: { imageShape: "landscape", displayName: true },
+        features: {
+          search: {
+            enabled: true,
+          },
+        },
       })),
       // triggers: ["mediaId"],
     });
 
-    btAddon.registerActionHandler("catalog", async (input, ctx) => {
+    btAddon.registerActionHandler("catalog", async (input) => {
       console.log("registerActionHandler() - catalog ", input.name, input);
-      const items: MovieItem[] = playlists
-        .get(input.id)
-        ?.playlist.map((item) => {
-          return <MovieItem>{
-            id: item.mediaid,
-            type: "movie",
-            ids: {
-              mediaId: item.mediaid,
-            },
-            name: item.title,
-            originalName: item.originalName,
-            description: item.description,
-            images: { poster: item.image },
-            sources: item.sources.map(
-              (src) =>
-                <Source>{
-                  type: "url",
-                  url: src.file,
-                  name: src.label,
-                  format: src.type,
-                }
-            ),
-          };
-        });
+      if (input.search) {
+        const items: MovieItem[] = playlists
+          .get(input.id)
+          ?.playlist.filter((item) =>
+            item.title.toLowerCase().includes(input.search.toLowerCase())
+          )
+          .map((item) => {
+            return <MovieItem>{
+              id: item.mediaid,
+              type: "movie",
+              ids: {
+                mediaId: item.mediaid,
+              },
+              name: item.title,
+              originalName: item.originalName,
+              description: item.description,
+              images: { poster: item.image },
+              sources: item.sources.map(
+                (src) =>
+                  <Source>{
+                    type: "url",
+                    url: src.file,
+                    name: src.label,
+                    format: src.type,
+                  }
+              ),
+            };
+          });
+        return {
+          nextCursor: null,
+          items,
+        };
+      } else {
+        const items: MovieItem[] = playlists
+          .get(input.id)
+          ?.playlist.map((item) => {
+            return <MovieItem>{
+              id: item.mediaid,
+              type: "movie",
+              ids: {
+                mediaId: item.mediaid,
+              },
+              name: item.title,
+              originalName: item.originalName,
+              description: item.description,
+              images: { poster: item.image },
+              sources: item.sources.map(
+                (src) =>
+                  <Source>{
+                    type: "url",
+                    url: src.file,
+                    name: src.label,
+                    format: src.type,
+                  }
+              ),
+            };
+          });
 
-      return {
-        nextCursor: null,
-        items,
-      };
+        return {
+          nextCursor: null,
+          items,
+        };
+      }
     });
 
     /*btAddon.registerActionHandler("item", async (input, ctx) => {
